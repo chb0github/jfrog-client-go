@@ -12,3 +12,4 @@
 
 # go coverage
 coverage.out
+/.jfrog/artifactory.cluster.license

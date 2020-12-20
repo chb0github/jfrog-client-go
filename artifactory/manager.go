@@ -29,6 +29,7 @@ func NewWithProgress(artDetails *auth.ServiceDetails, config config.Config, prog
 	if err != nil {
 		return nil, err
 	}
+
 	manager := &ArtifactoryServicesManagerImp{config: config, progress: progress}
 	manager.client, err = rthttpclient.ArtifactoryClientBuilder().
 		SetCertificatesPath(config.GetCertificatesPath()).
@@ -356,7 +357,27 @@ func (sm *ArtifactoryServicesManagerImp) GetServiceId() (string, error) {
 	systemService.ArtDetails = sm.config.GetServiceDetails()
 	return systemService.GetServiceId()
 }
+func (sm *ArtifactoryServicesManagerImp) GetGroup(name string) (*services.Group, error) {
+	groupService := services.NewGroupService(sm.client)
+	groupService.ArtDetails = sm.config.GetServiceDetails()
+	return groupService.GetGroup(name)
+}
 
+func (sm *ArtifactoryServicesManagerImp) CreateGroup(group services.Group) error {
+	groupService := services.NewGroupService(sm.client)
+	groupService.ArtDetails = sm.config.GetServiceDetails()
+	return groupService.CreateGroup(group)
+}
+func (sm *ArtifactoryServicesManagerImp) DeleteGroup(name string) error {
+	groupService := services.NewGroupService(sm.client)
+	groupService.ArtDetails = sm.config.GetServiceDetails()
+	return groupService.DeleteGroup(name)
+}
+func (sm *ArtifactoryServicesManagerImp) GroupExists(name string) (bool, error) {
+	groupService := services.NewGroupService(sm.client)
+	groupService.ArtDetails = sm.config.GetServiceDetails()
+	return groupService.GroupExits(name)
+}
 func (sm *ArtifactoryServicesManagerImp) PromoteDocker(params services.DockerPromoteParams) error {
 	systemService := services.NewDockerPromoteService(sm.client)
 	systemService.ArtDetails = sm.config.GetServiceDetails()

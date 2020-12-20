@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  artifactory:
+    user: 'root'
+    ports:
+    - 8080:8080
+    - 8081:8081
+    - 8082:8082
+    build:
+      context: .
+    environment:
+      LICENSE_DATA : ${LICENSE_DATA}
+    healthcheck:
+      test: "curl -f localhost:8081/artifactory/api/system/ping || false"
