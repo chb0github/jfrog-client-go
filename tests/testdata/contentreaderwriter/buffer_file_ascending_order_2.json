@@ -2,19 +2,17 @@
   "results": [
     {
       "repo": "a",
-      "path": "b",
+      "path": "b/c",
       "type": "folder"
     },
     {
       "repo": "a",
-      "path": "b/a",
-      "name": "bigFile-2",
+      "path": "b/c/d",
       "type": "folder"
     },
     {
-      "repo": "a",
-      "path": "b/a",
-      "name": "bigFile",
+      "repo": "b",
+      "path": "cc",
       "type": "folder"
     }
   ]

@@ -1,20 +1,18 @@
 {
   "results": [
     {
-      "repo": "a",
+      "repo": "repo1",
+      "path": "b",
+      "type": "folder"
+    },
+    {
+      "repo": "bb",
       "path": "b",
       "type": "folder"
     },
     {
       "repo": "a",
-      "path": "b/a",
-      "name": "bigFile-2",
-      "type": "folder"
-    },
-    {
-      "repo": "a",
-      "path": "b/a",
-      "name": "bigFile",
+      "path": "e",
       "type": "folder"
     }
   ]

@@ -17,14 +17,14 @@ import (
 type ArtifactoryServicesManagerImp struct {
 	client   *rthttpclient.ArtifactoryHttpClient
 	config   config.Config
-	progress ioutils.Progress
+	progress ioutils.ProgressMgr
 }
 
 func New(artDetails *auth.ServiceDetails, config config.Config) (ArtifactoryServicesManager, error) {
 	return NewWithProgress(artDetails, config, nil)
 }
 
-func NewWithProgress(artDetails *auth.ServiceDetails, config config.Config, progress ioutils.Progress) (ArtifactoryServicesManager, error) {
+func NewWithProgress(artDetails *auth.ServiceDetails, config config.Config, progress ioutils.ProgressMgr) (ArtifactoryServicesManager, error) {
 	err := (*artDetails).InitSsh()
 	if err != nil {
 		return nil, err
@@ -35,6 +35,7 @@ func NewWithProgress(artDetails *auth.ServiceDetails, config config.Config, prog
 		SetCertificatesPath(config.GetCertificatesPath()).
 		SetInsecureTls(config.IsInsecureTls()).
 		SetServiceDetails(artDetails).
+		SetContext(config.GetContext()).
 		Build()
 	if err != nil {
 		return nil, err
@@ -262,18 +263,20 @@ func (sm *ArtifactoryServicesManagerImp) UploadFilesWithResultReader(params ...s
 	return
 }
 
-func (sm *ArtifactoryServicesManagerImp) Copy(params services.MoveCopyParams) (successCount, failedCount int, err error) {
+func (sm *ArtifactoryServicesManagerImp) Copy(params ...services.MoveCopyParams) (successCount, failedCount int, err error) {
 	copyService := services.NewMoveCopyService(sm.client, services.COPY)
 	copyService.DryRun = sm.config.IsDryRun()
 	copyService.ArtDetails = sm.config.GetServiceDetails()
-	return copyService.MoveCopyServiceMoveFilesWrapper(params)
+	copyService.Threads = sm.config.GetThreads()
+	return copyService.MoveCopyServiceMoveFilesWrapper(params...)
 }
 
-func (sm *ArtifactoryServicesManagerImp) Move(params services.MoveCopyParams) (successCount, failedCount int, err error) {
+func (sm *ArtifactoryServicesManagerImp) Move(params ...services.MoveCopyParams) (successCount, failedCount int, err error) {
 	moveService := services.NewMoveCopyService(sm.client, services.MOVE)
 	moveService.DryRun = sm.config.IsDryRun()
 	moveService.ArtDetails = sm.config.GetServiceDetails()
-	return moveService.MoveCopyServiceMoveFilesWrapper(params)
+	moveService.Threads = sm.config.GetThreads()
+	return moveService.MoveCopyServiceMoveFilesWrapper(params...)
 }
 
 func (sm *ArtifactoryServicesManagerImp) PublishGoProject(params _go.GoParams) error {

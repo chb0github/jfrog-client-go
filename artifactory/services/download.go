@@ -20,12 +20,11 @@ import (
 	"github.com/jfrog/jfrog-client-go/utils/io/fileutils"
 	"github.com/jfrog/jfrog-client-go/utils/io/fileutils/checksum"
 	"github.com/jfrog/jfrog-client-go/utils/log"
-	"github.com/mholt/archiver"
 )
 
 type DownloadService struct {
 	client       *rthttpclient.ArtifactoryHttpClient
-	Progress     clientio.Progress
+	Progress     clientio.ProgressMgr
 	ArtDetails   auth.ServiceDetails
 	DryRun       bool
 	Threads      int
@@ -69,7 +68,7 @@ func (ds *DownloadService) SetDryRun(isDryRun bool) {
 }
 
 func (ds *DownloadService) DownloadFiles(downloadParams ...DownloadParams) (int, int, error) {
-	producerConsumer := parallel.NewBounedRunner(ds.GetThreads(), false)
+	producerConsumer := parallel.NewRunner(ds.GetThreads(), 20000, false)
 	errorsQueue := clientutils.NewErrorsQueue(1)
 	expectedChan := make(chan int, 1)
 	successCounters := make([]int, ds.GetThreads())
@@ -110,6 +109,10 @@ func (ds *DownloadService) prepareTasks(producer parallel.Runner, expectedChan c
 				log.Error(err)
 				errorsQueue.AddError(err)
 				continue
+			}
+			if ds.Progress != nil {
+				total, _ := reader.Length()
+				ds.Progress.IncGeneralProgressTotalBy(int64(total))
 			}
 			// Produce download tasks for the download consumers.
 			totalTasks += produceTasks(reader, downloadParams, producer, fileHandlerFunc, errorsQueue)
@@ -402,31 +405,12 @@ func (ds *DownloadService) downloadFileIfNeeded(downloadPath, localPath, localFi
 	if isEqual {
 		log.Debug(logMsgPrefix, "File already exists locally.")
 		if downloadParams.IsExplode() {
-			e = explodeLocalFile(localPath, localFileName)
+			e = clientutils.ExtractArchive(localPath, localFileName, downloadData.Dependency.Name, logMsgPrefix)
 		}
 		return e
 	}
 	downloadFileDetails := createDownloadFileDetails(downloadPath, localPath, localFileName, downloadData)
 	return ds.downloadFile(downloadFileDetails, logMsgPrefix, downloadParams)
-}
-
-func explodeLocalFile(localPath, localFileName string) (err error) {
-	log.Info("Extracting archive:", localFileName, "to", localPath)
-	arch := archiver.MatchingFormat(localFileName)
-	absolutePath := filepath.Join(localPath, localFileName)
-	err = nil
-
-	// The file is indeed an archive
-	if arch != nil {
-		err := arch.Open(absolutePath, localPath)
-		if err != nil {
-			return errorutils.CheckError(err)
-		}
-		// If the file was extracted successfully, remove it from the file system
-		err = os.Remove(absolutePath)
-	}
-
-	return errorutils.CheckError(err)
 }
 
 func createDir(localPath, localFileName, logMsgPrefix string) error {

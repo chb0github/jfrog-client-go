@@ -42,8 +42,8 @@ type ArtifactoryServicesManager interface {
 	DeleteProps(params services.PropsParams) (int, error)
 	UploadFilesWithResultReader(params ...services.UploadParams) (resultReader *content.ContentReader, totalUploaded, totalFailed int, err error)
 	UploadFiles(params ...services.UploadParams) (totalUploaded, totalFailed int, err error)
-	Copy(params services.MoveCopyParams) (successCount, failedCount int, err error)
-	Move(params services.MoveCopyParams) (successCount, failedCount int, err error)
+	Copy(params ...services.MoveCopyParams) (successCount, failedCount int, err error)
+	Move(params ...services.MoveCopyParams) (successCount, failedCount int, err error)
 	PublishGoProject(params _go.GoParams) error
 	Ping() ([]byte, error)
 	GetConfig() config.Config
@@ -188,11 +188,11 @@ func (esm *EmptyArtifactoryServicesManager) UploadFilesWithResultReader(params .
 	panic("Failed: Method is not implemented")
 }
 
-func (esm *EmptyArtifactoryServicesManager) Copy(params services.MoveCopyParams) (successCount, failedCount int, err error) {
+func (esm *EmptyArtifactoryServicesManager) Copy(params ...services.MoveCopyParams) (successCount, failedCount int, err error) {
 	panic("Failed: Method is not implemented")
 }
 
-func (esm *EmptyArtifactoryServicesManager) Move(params services.MoveCopyParams) (successCount, failedCount int, err error) {
+func (esm *EmptyArtifactoryServicesManager) Move(params ...services.MoveCopyParams) (successCount, failedCount int, err error) {
 	panic("Failed: Method is not implemented")
 }
 
@@ -275,3 +275,8 @@ func (esm *EmptyArtifactoryServicesManager) DeleteGroup(name string) error {
 func (esm *EmptyArtifactoryServicesManager) GroupExists(name string) (bool, error){
 	panic("Failed: Method is not implemented")
 }
+
+// Compile time check of interface implementation.
+// Since EmptyArtifactoryServicesManager can be used by tests external to this project, we want this project's tests to fail,
+// if EmptyArtifactoryServicesManager stops implementing the ArtifactoryServicesManager interface.
+var _ ArtifactoryServicesManager = (*EmptyArtifactoryServicesManager)(nil)

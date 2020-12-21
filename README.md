@@ -183,6 +183,8 @@ serviceConfig, err := config.NewConfigBuilder().
     SetCertificatesPath(certPath).
     SetThreads(threads).
     SetDryRun(false).
+    // Add [Context](https://golang.org/pkg/context/)
+    SetContext(ctx).
     Build()
 ```
 
@@ -776,6 +778,8 @@ serviceConfig, err := config.NewConfigBuilder().
     SetCertificatesPath(certPath).
     SetThreads(threads).
     SetDryRun(false).
+    // Add [Context](https://golang.org/pkg/context/)
+    SetContext(ctx).
     Build()
 ```
 
