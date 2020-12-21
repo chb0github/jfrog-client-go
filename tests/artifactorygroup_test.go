@@ -11,7 +11,6 @@ import (
 	"testing"
 )
 
-
 func TestGroups(t *testing.T) {
 	t.Run("create", testCreateGroup)
 	t.Run("update", testUpdateGroup)
@@ -33,7 +32,7 @@ func testCreateGroup(t *testing.T) {
 	gs.SetArtifactoryDetails(details)
 
 	group := services.Group{
-		Name:            fmt.Sprintf("test%d",  rand.Int()),
+		Name:            fmt.Sprintf("test%d", rand.Int()),
 		Description:     "hello",
 		AutoJoin:        false,
 		AdminPrivileges: true,
@@ -41,14 +40,13 @@ func testCreateGroup(t *testing.T) {
 		RealmAttributes: "",
 	}
 	err = gs.CreateGroup(group)
-	assert.NoError(t,err)
+	assert.NoError(t, err)
 
 	g, err := gs.GetGroup(group.Name)
-	assert.NotNil(t,g)
-	assert.Equal(t,group,*g)
+	assert.NotNil(t, g)
+	assert.Equal(t, group, *g)
 
 }
-
 
 func testUpdateGroup(t *testing.T) {
 	details := auth.NewArtifactoryDetails()
@@ -65,7 +63,7 @@ func testUpdateGroup(t *testing.T) {
 	gs.SetArtifactoryDetails(details)
 
 	group := services.Group{
-		Name:            fmt.Sprintf("test%d",  rand.Int()),
+		Name:            fmt.Sprintf("test%d", rand.Int()),
 		Description:     "hello",
 		AutoJoin:        false,
 		AdminPrivileges: true,
@@ -73,14 +71,14 @@ func testUpdateGroup(t *testing.T) {
 		RealmAttributes: "",
 	}
 	err = gs.CreateGroup(group)
-	assert.NoError(t,err)
+	assert.NoError(t, err)
 
 	group.Description = "Changed description"
 	err = gs.UpdateGroup(group)
-	assert.NoError(t,err)
+	assert.NoError(t, err)
 	grp, err := gs.GetGroup(group.Name)
-	assert.NoError(t,err)
-	assert.Equal(t,group,*grp)
+	assert.NoError(t, err)
+	assert.Equal(t, group, *grp)
 }
 
 func testDeleteGroup(t *testing.T) {
@@ -98,7 +96,7 @@ func testDeleteGroup(t *testing.T) {
 	gs.SetArtifactoryDetails(details)
 
 	group := services.Group{
-		Name:            fmt.Sprintf("test%d",  rand.Int()),
+		Name:            fmt.Sprintf("test%d", rand.Int()),
 		Description:     "hello",
 		AutoJoin:        false,
 		AdminPrivileges: true,
@@ -106,10 +104,10 @@ func testDeleteGroup(t *testing.T) {
 		RealmAttributes: "",
 	}
 	err = gs.CreateGroup(group)
-	assert.NoError(t,err)
+	assert.NoError(t, err)
 	err = gs.DeleteGroup(group.Name)
-	assert.NoError(t,err)
+	assert.NoError(t, err)
 	g, err := gs.GetGroup(group.Name)
-	assert.Nil(t,g)
+	assert.Nil(t, g)
 
 }

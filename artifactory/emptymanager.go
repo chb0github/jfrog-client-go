@@ -60,7 +60,7 @@ type ArtifactoryServicesManager interface {
 	GetServiceId() (string, error)
 	PromoteDocker(params services.DockerPromoteParams) error
 	Client() *rthttpclient.ArtifactoryHttpClient
-	GetGroup(name string) (*services.Group,error)
+	GetGroup(name string) (*services.Group, error)
 	CreateGroup(group services.Group) error
 	DeleteGroup(name string) error
 	GroupExists(name string) (bool, error)
@@ -263,16 +263,16 @@ func (esm *EmptyArtifactoryServicesManager) Client() *rthttpclient.ArtifactoryHt
 func (esm *EmptyArtifactoryServicesManager) GetAllRepositories() (*[]services.RepositoryDetails, error) {
 	panic("Failed: Method is not implemented")
 }
-func (esm *EmptyArtifactoryServicesManager)  GetGroup(name string) (services.Group,error){
+func (esm *EmptyArtifactoryServicesManager) GetGroup(name string) (services.Group, error) {
 	panic("Failed: Method is not implemented")
 }
-func (esm *EmptyArtifactoryServicesManager) CreateGroup(group services.Group) error{
+func (esm *EmptyArtifactoryServicesManager) CreateGroup(group services.Group) error {
 	panic("Failed: Method is not implemented")
 }
 func (esm *EmptyArtifactoryServicesManager) DeleteGroup(name string) error {
 	panic("Failed: Method is not implemented")
 }
-func (esm *EmptyArtifactoryServicesManager) GroupExists(name string) (bool, error){
+func (esm *EmptyArtifactoryServicesManager) GroupExists(name string) (bool, error) {
 	panic("Failed: Method is not implemented")
 }
 

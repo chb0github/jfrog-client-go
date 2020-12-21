@@ -2,14 +2,13 @@ package services
 
 import rthttpclient "github.com/jfrog/jfrog-client-go/artifactory/httpclient"
 
-
-
 import (
 	"encoding/json"
 	"fmt"
 	"github.com/jfrog/jfrog-client-go/auth"
 	"github.com/jfrog/jfrog-client-go/utils/errorutils"
 )
+
 type Group struct {
 	Name            string `json:"name,omitempty"`
 	Description     string `json:"description,omitempty"`
@@ -38,7 +37,7 @@ func (gs *GroupService) GetGroup(name string) (*Group, error) {
 		return nil, err
 	}
 	if res.StatusCode > 204 {
-		return nil,fmt.Errorf("%d %s: %s",res.StatusCode, res.Status,string(body))
+		return nil, fmt.Errorf("%d %s: %s", res.StatusCode, res.Status, string(body))
 	}
 	var group Group
 	if err := json.Unmarshal(body, &group); err != nil {
@@ -54,18 +53,18 @@ func (gs *GroupService) CreateGroup(group Group) error {
 		return err
 	}
 
-	httpDetails.Headers =  map[string]string {
+	httpDetails.Headers = map[string]string{
 		"Content-Type": "application/json",
-		"Accept": "application/json",
+		"Accept":       "application/json",
 	}
 	//
 	url := fmt.Sprintf("%sapi/security/groups/%s", gs.ArtDetails.GetUrl(), group.Name)
 	resp, body, err := gs.client.SendPut(url, content, &httpDetails)
-	if  err != nil {
+	if err != nil {
 		return err
 	}
 	if resp.StatusCode > 204 {
-		return fmt.Errorf("%d %s: %s",resp.StatusCode, resp.Status,string(body))
+		return fmt.Errorf("%d %s: %s", resp.StatusCode, resp.Status, string(body))
 	}
 	return nil
 }
@@ -81,7 +80,7 @@ func (gs *GroupService) DeleteGroup(name string) error {
 		return fmt.Errorf("no response provided (including status code)")
 	}
 	if resp.StatusCode > 204 {
-		return fmt.Errorf("%d %s",resp.StatusCode, resp.Status)
+		return fmt.Errorf("%d %s", resp.StatusCode, resp.Status)
 	}
 	return err
 }
