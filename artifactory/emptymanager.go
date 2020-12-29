@@ -60,6 +60,10 @@ type ArtifactoryServicesManager interface {
 	GetServiceId() (string, error)
 	PromoteDocker(params services.DockerPromoteParams) error
 	Client() *rthttpclient.ArtifactoryHttpClient
+	GetUser(name string) (*services.User, error)
+	CreateUser(user services.User) error
+	DeleteUser(name string) error
+	UserExists(name string) (bool, error)
 }
 
 // By using this struct, you have the option of overriding only some of the ArtifactoryServicesManager
@@ -259,7 +263,21 @@ func (esm *EmptyArtifactoryServicesManager) Client() *rthttpclient.ArtifactoryHt
 func (esm *EmptyArtifactoryServicesManager) GetAllRepositories() (*[]services.RepositoryDetails, error) {
 	panic("Failed: Method is not implemented")
 }
+func (esm *EmptyArtifactoryServicesManager) GetUser(name string) (*services.User, error) {
+	panic("Failed: Method is not implemented")
+}
 
+func (esm *EmptyArtifactoryServicesManager) CreateUser(user services.User) error {
+	panic("Failed: Method is not implemented")
+}
+
+func (esm *EmptyArtifactoryServicesManager) DeleteUser(name string) error {
+	panic("Failed: Method is not implemented")
+}
+
+func (esm *EmptyArtifactoryServicesManager) UserExists(name string) (bool, error) {
+	panic("Failed: Method is not implemented")
+}
 // Compile time check of interface implementation.
 // Since EmptyArtifactoryServicesManager can be used by tests external to this project, we want this project's tests to fail,
 // if EmptyArtifactoryServicesManager stops implementing the ArtifactoryServicesManager interface.
